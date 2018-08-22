@@ -1,0 +1,25 @@
+[debug] [2018-08-22T03:09:21.808Z] ----------------------------------------------------------------------
+[debug] [2018-08-22T03:09:21.809Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\matth\AppData\Roaming\npm\node_modules\firebase-tools\bin\firebase functions:shell
+[debug] [2018-08-22T03:09:21.809Z] CLI Version:   4.1.2
+[debug] [2018-08-22T03:09:21.809Z] Platform:      win32
+[debug] [2018-08-22T03:09:21.809Z] Node Version:  v8.11.1
+[debug] [2018-08-22T03:09:21.811Z] Time:          Tue Aug 21 2018 23:09:21 GMT-0400 (Eastern Daylight Time)
+[debug] [2018-08-22T03:09:21.811Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-08-22T03:09:21.820Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-08-22T03:09:21.820Z] > authorizing via signed-in user
+[debug] [2018-08-22T03:09:21.822Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/mcgruff-crime-catalog  
+ 
+[debug] [2018-08-22T03:09:22.131Z] <<< HTTP RESPONSE 200
+[info] i  functions: Preparing to emulate functions.
+[debug] [2018-08-22T03:09:22.831Z] Fetching environment
+[debug] [2018-08-22T03:09:22.833Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/mcgruff-crime-catalog  
+ 
+[debug] [2018-08-22T03:09:23.142Z] <<< HTTP RESPONSE 200
+[debug] [2018-08-22T03:09:23.143Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/499674615284:getServerAppConfig  
+ 
+[debug] [2018-08-22T03:09:23.465Z] <<< HTTP RESPONSE 200
+[debug] [2018-08-22T03:09:23.466Z] Starting @google-cloud/functions-emulator
+[debug] [2018-08-22T03:09:24.993Z] Parsing function triggers
+[info] +  functions: run
+[info] +  functions: test
