@@ -7,35 +7,7 @@ const Range = require('./distance');
 const Parser = require('rss-parser');
 const parser = new Parser();
 
-exports.run = functions.https.onRequest((request, response) => {
-
-    admin.initializeApp(functions.config().firebase);
-
-    const db = admin.database().ref("users")
-
-
-      grab911Messages().then(incidents =>{
-        const pushNotes = []; 
-        db.once("value")
-        .then(function(users) {
-          users.forEach(user =>{
-            var alerts = user.val().alerts;
-            alerts.forEach(alert => {
-                incidents.forEach(incident =>{
-                    if(Range.IsInRange(incident.cords, [alert.latitude, alert.longitude], alert.range)){
-                        console.log(`alert: ${alert.name}`)        
-                    }else{
-                        console.log("no alert"); 
-                    }
-                })  
-    
-            })
-          })        
-        })    
-    }); 
-});
-
-  exports.getUsers = functions.https.onRequest(async (request, response) => {
+  exports.getUsers = functions.https.onRequest((request, response) => {
     admin.initializeApp(functions.config().firebase);
     grab911Messages().then(incidents => {
 
@@ -74,8 +46,10 @@ exports.run = functions.https.onRequest((request, response) => {
               method: 'POST',
             }).then((x)=>{
                 console.log(`sent alert ${title}`);
+                response.status(200).end();
             }).catch((x=>{
-                console.log("failed");
+                console.log(`failed ${x}`);
+                response.status(500).send('Failed');
             }))
         })
       })
@@ -84,48 +58,25 @@ exports.run = functions.https.onRequest((request, response) => {
 })
 
 
+exports.time = functions.https.onRequest((request, response) => {
+  response.status(200).send(new Date().getTime().toString()) ;
+}); 
+
 function grab911Messages() {
-   return parser.parseURL('https://www2.monroecounty.gov/911/rss.php')
-     // .then((response) => response.text())
-      //.then((responseData) => rssParser.parse(responseData))
-      .then((rss) => Incidents.buildIncidents( rss.items.map(x => {
-        return { link: x.guid,title: x.title };
-      }))).then(inc => {
-        return inc; 
-     //   console.log(inc); 
-        // this.setState({incidents: inc})
-      });
-  }
+  return parser.parseURL('https://www2.monroecounty.gov/911/rss.php')
+    .then((rss) => Incidents.buildIncidents( rss.items.map(x => {
+      return { link: x.guid,title: x.title };
+    }))).then(inc => {
+      return inc; 
+    });
+}
 
 
 
 
-exports.test = functions.https.onRequest((request, response) => {
 
-    const token = ""
-    console.log("token: ", token)
-    if (!token) return;
-    const title = "There's something happening!"
-    const body = "check it out"
-    fetch('https://exp.host/--/api/v2/push/send', {
-      body: JSON.stringify({
-        to: token,
-        title: title,
-        body: body,
-        data: { message: `${title} - ${body}` },
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-    }).then((x)=>{
-        console.log(x); 
-        response.send("worked");
-    }).catch((x=>{
-        console.log(x); 
-        response.send("failed");
-    }))
 
-});
+
+
 
 
