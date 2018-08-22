@@ -44,38 +44,39 @@ exports.run = functions.https.onRequest((request, response) => {
 
         users.forEach((user) => {
           var alerts = user.val().alerts;
-          alerts.forEach(alert => {
-            console.log(alert)
 
-            incidents.forEach(incident => {
-              const alertNeedsNotifications = Range.IsInRange(incident.cords, [alert.latitude, alert.longitude], alert.range)
-              console.log(incident,alertNeedsNotifications)
-              if (!alertNeedsNotifications) return
-              console.log(message)
+          incidents.forEach(incident => {
+            const relevantAlerts = alerts.filter(alert => {
+              return Range.IsInRange(incident.cords, [alert.latitude, alert.longitude], alert.range)
+            })
+            console.log(relevantAlerts)
+            const alertNeedsNotifications = !!relevantAlerts.length;
+            console.log(incident,alertNeedsNotifications)
+            if (!alertNeedsNotifications) return
+            console.log(incident)
 
-              const token = `ExponentPushToken[${user.val().token}]`
-              // const title = 'hey there'
-              const title = message.address
-              const body = `Things are happening nearby ${alert.name}!`
+            const token = `ExponentPushToken[${user.val().token}]`
+            // const title = 'hey there'
+            const title = incident.address
+            const body = `Things are happening nearby ${relevantAlerts[0].name}!`
 
-              // send notification
-              fetch('https://exp.host/--/api/v2/push/send', {
-                body: JSON.stringify({
-                  to: token,
-                  title: title,
-                  body: body,
-                  data: { message: `${title} - ${body}` },
-                }),
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                method: 'POST',
-              }).then((x)=>{
-                  console.log(x);
-              }).catch((x=>{
-                  console.log(x);
-              }))
-          })
+            // send notification
+            fetch('https://exp.host/--/api/v2/push/send', {
+              body: JSON.stringify({
+                to: token,
+                title: title,
+                body: body,
+                data: { message: `${title} - ${body}` },
+              }),
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              method: 'POST',
+            }).then((x)=>{
+                console.log(`sent alert ${title}`);
+            }).catch((x=>{
+                console.log("failed");
+            }))
         })
       })
     })
