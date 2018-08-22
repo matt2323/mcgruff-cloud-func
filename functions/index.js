@@ -84,6 +84,44 @@ exports.run = functions.https.onRequest((request, response) => {
 
 });
 
+  exports.getUsers = functions.https.onRequest((request, response) => {
+    admin.initializeApp(functions.config().firebase);
+
+    const db = admin.database().ref("users")
+    db.once("value").then(function(users) {
+      users.forEach((user) =>{
+        var alerts = user.val().alerts;
+        alerts.forEach(alert => {
+          console.log(alert)
+          const alertNeedsNotifications = true
+          if (!alertNeedsNotifications) return
+
+          const token = `ExponentPushToken[${user.val().token}]`
+          const title = 'hey there'
+          const body = `Things are happening nearby ${alert.name}!`
+
+          // send notification
+          fetch('https://exp.host/--/api/v2/push/send', {
+            body: JSON.stringify({
+              to: token,
+              title: title,
+              body: body,
+              data: { message: `${title} - ${body}` },
+            }),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            method: 'POST',
+          }).then((x)=>{
+              console.log(x);
+          }).catch((x=>{
+              console.log(x);
+          }))
+        })
+      })
+    })
+  })
+
 
 function grab911Messages() {
    return parser.parseURL('https://www2.monroecounty.gov/911/rss.php')
@@ -92,8 +130,8 @@ function grab911Messages() {
       .then((rss) => Incidents.buildIncidents( rss.items.map(x => {
         return { link: x.guid,title: x.title };
       }))).then(inc => {
-        return inc; 
-     //   console.log(inc); 
+        return inc;
+     //   console.log(inc);
         // this.setState({incidents: inc});
       })
   }
