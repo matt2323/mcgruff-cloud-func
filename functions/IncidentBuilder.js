@@ -1,8 +1,8 @@
-import GeoCords from './GeoCoder'; 
+const GeoCords = require( './GeoCoder'); 
 
 
 
-export default function buildIncidents(messages){
+exports.buildIncidents = function buildIncidents(messages){
 
     const incidentsList = [];      
 
@@ -15,5 +15,5 @@ export default function buildIncidents(messages){
 }
 
 function getCords(title, link){
-    return GeoCords(title, link);  
+    return GeoCords.getCords(title, link);  
 }
