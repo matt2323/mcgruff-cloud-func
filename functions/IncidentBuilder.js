@@ -1,19 +1,11 @@
-const GeoCords = require( './GeoCoder'); 
+const GeoCords = require( './GeoCoder');
 
 
 
-exports.buildIncidents = function buildIncidents(messages){
-
-    const incidentsList = [];      
-
-    messages.forEach(element => {
-        incidentsList.push(getCords(element.title, element.link)); 
-    }); 
-
-    return Promise.all(incidentsList)
-
+exports.buildIncidents = async function buildIncidents (messages){
+    return Promise.all(messages.map(async message => await getCords(message)))
 }
 
-function getCords(title, link){
-    return GeoCords.getCords(title, link);  
+function getCords(element){
+    return GeoCords.getCords(element);
 }
