@@ -2,7 +2,7 @@ const NodeGeocoder = require('node-geocoder');
 const config =  {
     "provider": "google",
     "httpAdapter": "https",
-    "apiKey": "AIzaSyBcmvsE1MkuWlTW05i3AWj7xvcqL2Yvm6U",
+    "apiKey": "",
     "formatter": null
   }
 const geocoder = NodeGeocoder(config);
@@ -10,12 +10,11 @@ const geocoder = NodeGeocoder(config);
 exports.getCords = function getCords(element={}){
     return geocoder.geocode(cleanAddress((element || {}).title || ""))
     .then(function(res) {
-        return {
-          ...element,
+        return Object.assign({}, element, {
           "cords" :  [res[0].latitude, res[0].longitude],
             address: element.title,
             link: element.link,
-        }
+        })
     })
     .catch(function(err) {
       console.log(err);
